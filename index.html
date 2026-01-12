@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spending Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app">
+    <!-- Main content -->
+    <div class="content">
+      <h2 id="datetime"></h2>
+
+      <label>
+        Monthly Spending Goal ($)
+        <input type="number" id="monthlyGoal" maxlength="6" />
+      </label>
+
+      <br><br>
+
+      <label>
+        Money Spent ($)
+        <input type="number" id="moneySpent" maxlength="6" />
+      </label>
+
+      <br><br>
+
+      <h3>
+        Daily Spending Goal: $
+        <span id="dailyGoal">--</span>
+      </h3>
+    </div>
+
+    <!-- Button at the bottom -->
+    <button onclick="sendData()">Update Info</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
