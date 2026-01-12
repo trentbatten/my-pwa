@@ -1,5 +1,5 @@
 function sendData() {
-  alert("Bre has a hot ass");
+  alert("Info Has Been Updated");
 }
 
 if ("serviceWorker" in navigator) {
