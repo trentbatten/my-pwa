@@ -1,0 +1,82 @@
+let lastCalculatedGoal = null;
+
+function sendData(value) {
+  fetch(`http://192.168.4.1/set?value=${value}`)
+    .then(() => console.log("Sent to ESP32:", value))
+    .catch(err => console.error("ESP32 send failed:", err));
+}
+
+// Called when user presses "Update Info"
+function sendDataButton() {
+  if (lastCalculatedGoal === null) return;
+
+  sendData(lastCalculatedGoal);
+  alert("Info Has Been Updated");
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
+// Update date & time every second
+function updateDateTime() {
+  const now = new Date();
+  document.getElementById("datetime").textContent =
+    now.toLocaleDateString() + " " + now.toLocaleTimeString();
+}
+
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+// Core calculation (UI only)
+function calculateDailyGoal() {
+  const monthlyGoal = parseFloat(
+    document.getElementById("monthlyGoal").value
+  );
+  const moneySpent = parseFloat(
+    document.getElementById("moneySpent").value
+  );
+
+  if (isNaN(monthlyGoal) || isNaN(moneySpent)) {
+    lastCalculatedGoal = null;
+    return;
+  }
+
+  const today = new Date();
+  const lastDayOfMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0
+  );
+
+  const daysLeft =
+    lastDayOfMonth.getDate() - today.getDate() + 1;
+
+  if (daysLeft <= 0) {
+    lastCalculatedGoal = null;
+    return;
+  }
+
+  let dailyGoal =
+    (monthlyGoal - moneySpent) / daysLeft;
+
+  dailyGoal = Math.floor(dailyGoal);
+  dailyGoal = Math.max(0, Math.min(99, dailyGoal));
+
+  const formattedGoal =
+    dailyGoal.toString().padStart(2, "0");
+
+  // Update UI only
+  document.getElementById("dailyGoal").textContent =
+    formattedGoal;
+
+  // Store for button press
+  lastCalculatedGoal = formattedGoal;
+}
+
+// Live recalculation for display
+document.getElementById("monthlyGoal")
+  .addEventListener("input", calculateDailyGoal);
+
+document.getElementById("moneySpent")
+  .addEventListener("input", calculateDailyGoal);
